@@ -15,7 +15,7 @@ def cli():
     parser.add_argument(
         '-ip',
         '--ip',
-        help = 'The ip of the heartbeat server, defaults to localhost',
+        help = 'The interface on which the heartbeat server is listening, defaults to localhost',
         type = str,
     )
 
@@ -31,12 +31,22 @@ def cli():
     hb_port = args['port'] if args['port'] is not None else 1234
     return hb_server, hb_port
 
+class ServerSocket():
+    def __init__(self,server,port):
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sock.bind(self.server,self.port)
 
-if __name__ == '__main__':
+    def recv(self):
+        data, addr = self.sock.recvfrom(10)
+        logging.info('Recieved {} from {}'.format(data,addr))
+
+def main():
     server, port = cli()
-    logging.info('Creating Socket')
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    logging.info('PyHeartBeat client sending to IP %s , port %d'%(server, port))
+    sock.bind((server,port))
     while 1:
-        sock.sendto(b'Umair',(server,port))
-        sleep(5)
+        data, addr = sock.recvfrom(10)
+        logging.info('Recieved {} from {}'.format(data,addr))
+        sleep(2)
+if __name__ == '__main__':
+    main()
