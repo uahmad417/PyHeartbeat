@@ -1,10 +1,20 @@
 import argparse
 import logging
 from time import sleep, strftime
-from datetime import datetime
+from datetime import datetime, timedelta
 import socket
 
 logging.basicConfig(format = '%(asctime)s - %(message)s', level = logging.INFO)
+
+class BeatDict:
+    def __init__(self):
+        self.beat_dict = {}
+    
+    def update(self,ip):
+        self.beat_dict[self,ip] = datetime.now()
+
+    def checkTimeout(self,ip):
+        self.delta = datetime.now() - self.beat_dict[ip]
 
 def cli():
     parser = argparse.ArgumentParser(
@@ -47,6 +57,7 @@ def main():
     while 1:
         data, addr = sock.recvfrom(10)
         logging.info('Recieved {} from {}'.format(data,addr))
+        print(dir(addr))
         sleep(2)
 if __name__ == '__main__':
     main()
