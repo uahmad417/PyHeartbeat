@@ -7,31 +7,6 @@ import configparser
 
 logging.basicConfig(format='%(asctime)s -- %(levelname)s -- %(threadName)s --  %(message)s', level = logging.DEBUG, datefmt='%H:%M:%S')
 
-'''def cli():
-    parser = argparse.ArgumentParser(
-        prog='PyHBClient.py',
-        description='This is the heartbeat client'
-    )
-
-    parser.add_argument(
-        '-ip',
-        '--ip',
-        help = 'The ip of the heartbeat server, defaults to localhost',
-        type = str,
-    )
-
-    parser.add_argument(
-        '-p',
-        '--port',
-        help = 'The port of the heartbeat serer, defaults to 1234'
-    )
-
-    args = vars(parser.parse_args())
-
-    hb_server = args['ip'] if args['ip'] is not None else '127.0.0.1'
-    hb_port = args['port'] if args['port'] is not None else 1234
-    return hb_server, hb_port'''
-
 def readConfig():
     config = configparser.ConfigParser()
     logging.info('Reading configration file')
