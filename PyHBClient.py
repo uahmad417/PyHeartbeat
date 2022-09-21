@@ -18,7 +18,11 @@ if __name__ == '__main__':
     server, port = readConfig()
     logging.info('Creating Socket')
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    
+    
     while 1:
         logging.info(f'PyHeartBeat client sending Hello packet to IP {server} , port {port}')
-        sock.sendto('Hello'.encode('utf-8'),(server,port))
+        msg = f'Hello at _ {str(datetime.now())}'
+        sock.sendto(msg.encode('utf-8'),(server,port))
+        print(msg)
         sleep(5)
