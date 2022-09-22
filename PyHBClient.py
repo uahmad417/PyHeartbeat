@@ -1,28 +1,31 @@
-import argparse
 import logging
-from time import sleep, strftime
+from time import sleep
 from datetime import datetime
 import socket
 import configparser
 
-logging.basicConfig(format='%(asctime)s -- %(levelname)s -- %(threadName)s --  %(message)s', level = logging.DEBUG, datefmt='%H:%M:%S')
+
 
 def readConfig():
+    global config
     config = configparser.ConfigParser()
-    logging.info('Reading configration file')
     config.read('config.ini')
-    return config['HBServer']['host'], eval(config['HBServer']['port'])
 
 
 if __name__ == '__main__':
-    server, port = readConfig()
-    logging.info('Creating Socket')
+    readConfig()
+    logging.basicConfig(
+        format='%(asctime)s -- %(levelname)s -- %(threadName)s --  %(message)s',
+        level = eval(config['Logging']['level']),
+        datefmt='%H:%M:%S')
+    logging.debug('Read configration file')
+    logging.debug('Starting Program')
+    logging.debug('Creating Socket')
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     
     
     while 1:
-        logging.info(f'PyHeartBeat client sending Hello packet to IP {server} , port {port}')
+        logging.info(f'PyHeartBeat client sending Hello packet to IP {config["HBServer"]["host"]} , port {eval(config["HBServer"]["port"])}')
         msg = f'Hello at _ {str(datetime.now())}'
-        sock.sendto(msg.encode('utf-8'),(server,port))
-        print(msg)
-        sleep(5)
+        sock.sendto(msg.encode('utf-8'),(config['HBServer']['host'],eval(config['HBServer']['port'])))
+        sleep(eval(config["HBClient"]["HBWait"]))

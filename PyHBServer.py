@@ -1,14 +1,9 @@
-import argparse
-from concurrent.futures import thread
 import logging
-from time import sleep, strftime
-from datetime import datetime, timedelta
+from time import sleep
+from datetime import datetime
 import socket
 import configparser
 import threading
-import concurrent.futures
-
-logging.basicConfig(format='%(asctime)s -- %(levelname)s -- %(threadName)s --  %(message)s', level = logging.DEBUG, datefmt='%H:%M:%S')
 
 class BeatDict:
     def __init__(self):
@@ -16,14 +11,15 @@ class BeatDict:
         self.beat_dict = {}
 
     def update_dict(self,ip,recieve_time):
+        logging.debug(f'Client Dictionary Updated with IP {ip}')
         self.beat_dict[ip] = recieve_time
     
     def check_hbclient_health(self):
         if len(self.beat_dict) != 0:
             for ip, timestamp in self.beat_dict.items():
-                logging.info(f'Heart Beat Client at IP {ip} is alive')\
+                logging.info(f'Heartbeat Client at IP {ip} is alive')\
                     if (datetime.now()-datetime.strptime(timestamp.strip(),'%Y-%m-%d %H:%M:%S.%f')).seconds < 30\
-                    else logging.warning(f'HeartBeat client at {ip} is dead')
+                    else logging.warning(f'HEARTBEAT CLIENT AT {ip} IS DEAD')
         else:
             logging.info('No Heartbeat clients connected yet')
 
@@ -45,15 +41,12 @@ class BeatRec(BeatDict):
 
 
 def readConfig():
+    global config
     config = configparser.ConfigParser()
-    logging.debug('Reading configration file')
     config.read('config.ini')
-    return config
 
 def main():
-    config = readConfig()
     beat_recieve = BeatRec(config['HBServer']['host'], eval(config['HBServer']['port']))
-    
     logging.debug('Creating Thread Event')
     event = threading.Event()
     logging.debug('Creating Thread')
@@ -64,12 +57,19 @@ def main():
     beat_thread.start()
     while 1:
         logging.debug('Sleeping for 10 secs...')
-        sleep(10)
+        sleep(eval(config["HBServer"]["check_health"]))
         logging.debug('Clearing the thread event')
         event.clear()
         beat_recieve.check_hbclient_health()
         event.set()
 
 if __name__ == '__main__':
+    readConfig()
+    logging.basicConfig(
+        format='%(asctime)s -- %(levelname)s -- %(threadName)s --  %(message)s',
+        level = eval(config['Logging']['level']),
+        filename=config['Logging']['file'],
+        datefmt='%H:%M:%S')
+    logging.debug('Read Configuration File')
     logging.debug('Program Started')
     main()
