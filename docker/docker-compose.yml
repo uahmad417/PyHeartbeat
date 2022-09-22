@@ -1,0 +1,32 @@
+version: '3'
+services:
+  hbclient1:
+    build:
+      context: .
+    container_name: client1
+
+  hbclient2:
+    build:
+      context: .
+    container_name: client2
+
+  hbclient3:
+    build:
+      context: .
+    container_name: client3
+
+  hbclient4:
+    build:
+      context: .
+    container_name: client4
+  
+  hbclient5:
+    build:
+      context: .
+    container_name: client5
+  
+  hbserver:
+    build:
+      context: .
+    container_name: server
+    command: python PyHBServer.py
