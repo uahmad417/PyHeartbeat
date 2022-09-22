@@ -21,3 +21,5 @@ $ pyton PyHBserver.py &
 ```
 
 Also by default the scripts log to stdout. It is recommended to specifiy a log file in `config.ini`.
+
+To stop the scripts simply get the pid of the script using ps or some other process utility and kill it.
