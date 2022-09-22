@@ -15,9 +15,10 @@ def readConfig():
 if __name__ == '__main__':
     readConfig()
     logging.basicConfig(
-        format='%(asctime)s -- %(levelname)s -- %(threadName)s --  %(message)s',
+        format ='%(asctime)s -- %(levelname)s -- %(threadName)s --  %(message)s',
         level = eval(config['Logging']['level']),
-        datefmt='%H:%M:%S')
+        filename = config['Logging']['file'],
+        datefmt ='%H:%M:%S')
     logging.debug('Read configration file')
     logging.debug('Starting Program')
     logging.debug('Creating Socket')
